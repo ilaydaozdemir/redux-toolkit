@@ -9,19 +9,23 @@ const initialState = {
 {
   type: "ADD_POST";
 }
+{
+  type: "REMOVE_POST";
+}
+
+//action types
+const ADD_POST = "ADD_POST";
+const REMOVE_POST = "REMOVE_POST";
 const addPostAction = (post) => {
   return {
-    type: "ADD_POST",
+    type: ADD_POST,
     payload: post,
   };
 };
 
-{
-  type: "REMOVE_POST";
-}
 const removePostAction = (id) => {
   return {
-    type: "REMOVE_POST",
+    type: REMOVE_POST,
     id,
   };
 };
