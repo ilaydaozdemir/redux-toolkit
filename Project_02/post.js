@@ -1,8 +1,12 @@
-const { createStore } = require("redux");
+const { createStore, combineReducers } = require("redux");
 
 //initial state
 const initialState = {
   posts: [],
+};
+
+const usersInitialState = {
+  users: [],
 };
 
 //actions --> action-action creator
@@ -16,10 +20,18 @@ const initialState = {
 //action types
 const ADD_POST = "ADD_POST";
 const REMOVE_POST = "REMOVE_POST";
+const ADD_USER = "ADD_USER";
+
 const addPostAction = (post) => {
   return {
     type: ADD_POST,
     payload: post,
+  };
+};
+const addUserAction = (user) => {
+  return {
+    type: ADD_USER,
+    payload: user,
   };
 };
 
@@ -30,7 +42,7 @@ const removePostAction = (id) => {
   };
 };
 
-//reducer
+//Post reducer
 const postReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_POST:
@@ -47,12 +59,32 @@ const postReducer = (state = initialState, action) => {
       return state;
   }
 };
+
+//User reducer
+const userReducer = (state = usersInitialState, action) => {
+  switch (action.type) {
+    case ADD_USER:
+      return {
+        users: [...state.users, action.payload],
+      };
+    default:
+      return state;
+  }
+};
+
+const rootReducer = combineReducers({
+  posts: postReducer,
+  users: userReducer,
+});
+
 //store
-const store = createStore(postReducer);
+const store = createStore(rootReducer);
+
 //subscribe to store
 store.subscribe(() => {
   const data = store.getState();
-  console.log(data);
+  console.log("posts", data.posts);
+  console.log("users", data.users);
 });
 
 // add post actions
@@ -75,3 +107,4 @@ store.dispatch(
   })
 );
 store.dispatch(removePostAction(2));
+store.dispatch(addUserAction({ name: "Ilayda" }));
