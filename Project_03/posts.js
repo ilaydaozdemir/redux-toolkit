@@ -42,9 +42,10 @@ const fetchPosts = () => {
 //reducers
 const postsReducer = (state = initalState, action) => {
   switch (action.type) {
-    case "REQUEST_STARTED":
+    case REQUEST_STARTED:
       return {
-        posts: ["Hello Guys"],
+        ...state,
+        loading: true,
       };
   }
 };
@@ -59,5 +60,4 @@ store.subscribe(() => {
 });
 
 //dispatch
-store.dispatch(fetchPostRequest());
-store.dispatch(fetchPostRequest());
+store.dispatch(fetchPosts());
