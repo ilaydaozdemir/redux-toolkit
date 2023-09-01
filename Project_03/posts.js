@@ -42,3 +42,4 @@ store.subscribe(() => {
 
 //dispatch
 store.dispatch(fetchPostRequest());
+store.dispatch(fetchPostRequest());
