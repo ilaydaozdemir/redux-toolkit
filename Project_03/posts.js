@@ -1,18 +1,12 @@
 const { createStore, applyMiddleware } = require("redux");
-const loggerMiddleware = require("redux-logger").createLogger();
+const thunk = require("redux-thunk");
+const axios = require("axios");
 
-//suctom middleware
-const customLogger = () => {
-  return (next) => {
-    return (action) => {
-      console.log("action:", action);
-      next(action);
-    };
-  };
-};
 //initial state
 const initalState = {
   posts: [],
+  eror: "",
+  loading: false,
 };
 
 const FETCH_SUCCESS = "FETCH_SUCCESS";
@@ -23,13 +17,28 @@ const REQUEST_STARTED = "REQUEST_STARTED";
 const fetchPostRequest = () => {
   return { type: REQUEST_STARTED };
 };
-const fetchPostSuccess = () => {
-  return { type: FETCH_SUCCESS };
+const fetchPostSuccess = (posts) => {
+  return { type: FETCH_SUCCESS, payload: posts };
 };
-const fetchPostFailure = () => {
+const fetchPostFailure = (err) => {
   return { type: FETCH_FAILURE };
 };
-
+const fetchPosts = () => {
+  return async (dispatch) => {
+    try {
+      //dispatch
+      dispatch(fetchPostRequest());
+      const data = await axios.get(
+        "https://jsonplaceholder.typicode.com/posts"
+      );
+      //success
+      dispatch(fetchPostSuccess(data));
+    } catch (error) {
+      //error
+      dispatch(fetchPostFailure(error.message));
+    }
+  };
+};
 //reducers
 const postsReducer = (state = initalState, action) => {
   switch (action.type) {
@@ -41,7 +50,7 @@ const postsReducer = (state = initalState, action) => {
 };
 
 //store
-const store = createStore(postsReducer, applyMiddleware(customLogger));
+const store = createStore(postsReducer, applyMiddleware(thunk));
 
 //subscribe
 store.subscribe(() => {
