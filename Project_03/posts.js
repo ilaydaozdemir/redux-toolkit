@@ -1,6 +1,15 @@
 const { createStore, applyMiddleware } = require("redux");
 const loggerMiddleware = require("redux-logger").createLogger();
 
+//suctom middleware
+const customLogger = () => {
+  return (next) => {
+    return (action) => {
+      console.log("action:", action);
+      next(action);
+    };
+  };
+};
 //initial state
 const initalState = {
   posts: [],
@@ -32,7 +41,7 @@ const postsReducer = (state = initalState, action) => {
 };
 
 //store
-const store = createStore(postsReducer, applyMiddleware(loggerMiddleware));
+const store = createStore(postsReducer, applyMiddleware(customLogger));
 
 //subscribe
 store.subscribe(() => {
